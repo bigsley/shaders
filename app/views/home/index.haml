@@ -1,1 +1,24 @@
-BLAH BLAH
+= stylesheet_link_tag 'home'
+
+.color_schemer
+
+  %canvas#canvas
+
+  .pickers{clear: 'both'}
+    = link_to 'Add Picker', '#', class: 'add_picker'
+    = link_to 'Remove Picker', '#', class: 'remove_picker'
+
+    .name
+      Name: 
+      %input{type: 'text', class: 'function_name'}
+
+    .picker
+      %input{type: 'text', class: 'color'}
+      %input{type: 'text', class: 'time'}
+
+  .output{clear: 'both'}
+    .title
+      CODE:
+    %textarea.code
+
+
