@@ -22,7 +22,6 @@ void main() {
 }
 """
 
-
 compileShader = (gl, shaderSource, shaderType) ->
   shader = gl.createShader(shaderType)
   gl.shaderSource(shader, shaderSource)
@@ -47,6 +46,7 @@ streaming = false
 window.GLRenderer = Backbone.View.extend
   initialize: (args) ->
     @el = args['el']
+    @startTime = Date.now()
     this.initializeRenderer()
     this.draw()
 
@@ -102,14 +102,12 @@ window.GLRenderer = Backbone.View.extend
       setTimeout(askForCamWrapper, 200)
       # this.askForCam()
 
-    console.log("video:")
-    console.log(@video)
-    console.log(@video.readyState)
-    
     this.updateVideo()
 
     update = () =>
-      this.draw()
+      this.draw
+        time: (Date.now() - @startTime)/1000
+        
       window.webkitRequestAnimationFrame(update)
 
     update()
@@ -177,14 +175,6 @@ window.GLRenderer = Backbone.View.extend
     if image
       # Upload the image into the texture.
       @gl.texImage2D(@gl.TEXTURE_2D, 0, @gl.RGBA, @gl.RGBA, @gl.UNSIGNED_BYTE, image)
-
-  readPixels: () ->
-    this.draw()
-    w = @gl.drawingBufferWidth
-    h = @gl.drawingBufferHeight
-    arr = new Uint8Array(w * h * 4)
-    @gl.readPixels(0, 0, w, h, @gl.RGBA, @gl.UNSIGNED_BYTE, arr)
-    return arr
 
   hackSetUniformInt: (name, value) ->
     location = @gl.getUniformLocation(@program, name)

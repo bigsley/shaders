@@ -14,5 +14,8 @@
 //= require jquery_ujs
 //= require underscore-min
 //= require backbone-min
+//= require Color.Space
+//= require Color.Picker.Classic
 //= require 'renderer'
-//= require_tree .
+//= require 'editors'
+//= require 'color_schemes'

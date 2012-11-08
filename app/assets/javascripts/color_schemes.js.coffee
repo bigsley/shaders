@@ -22,7 +22,6 @@ rgbToArgs = (obj) ->
 
 window.rgbToArgs = rgbToArgs
 
-
 ShaderMaker = Backbone.View.extend
   initialize: (args) ->
     @el = args['el']
@@ -44,10 +43,21 @@ ShaderMaker = Backbone.View.extend
     $(e.target).closest('canvas').toggleClass('blowup')
 
   addPicker: (e) ->
-    e.preventDefault()
+    e.preventDefault() if e
 
-    clonedPicker = $($('.picker')[0]).clone()
-    $('.pickers').append(clonedPicker)
+    pickerHTML = """
+      <div class='picker'>
+        <input class='color' type='text'>
+        <input class='time' type='text'>
+      </div>"""
+
+    $('.pickers').append(pickerHTML)
+
+  setNumberPickers: (num) ->
+    $('.pickers').find('.picker').each (x, elem) ->
+      $(elem).remove()
+
+    this.addPicker() for [1..num]
 
   removePicker: (e) ->
     e.preventDefault()
@@ -62,6 +72,7 @@ ShaderMaker = Backbone.View.extend
         hex = rgbToHex(rgba.R, rgba.G, rgba.B)
         target.val(hex)
         this.updateDivColor(target, hex)
+        this.updateCode()
 
     picker.element.style.top = target.position().top + "px"
     picker.element.style.left = target.position().left + target.width() + 20 + "px"
@@ -71,7 +82,7 @@ ShaderMaker = Backbone.View.extend
     target = $(e.target).closest('.color')
     color = target.val()
     this.updateDivColor(target, color)
-
+    this.updateCode()
 
   updateDivColor: (target, color) ->
     target.css('background-color', color)
@@ -82,8 +93,6 @@ ShaderMaker = Backbone.View.extend
         target.css('color', '#fff')
       else
         target.css('color', '#000')
-
-    this.updateCode()
 
   updateCode: ->
     colors = []
@@ -151,11 +160,19 @@ ShaderMaker = Backbone.View.extend
   getTransformedProgram: ->
     func = $('.code').val()
     func_name = $('.function_name').val()
+
+    animateCode =
+      if @doAnimate
+        "v = mod(v + mod(time / 10., 1.), 1.);"
+      else
+        ""
+
     transformed_program = """
       precision mediump float;
 
       varying vec2 position;
       uniform sampler2D webcam;
+      uniform float time;
 
       #{func}
 
@@ -163,21 +180,36 @@ ShaderMaker = Backbone.View.extend
         vec2 pos = vec2(position.x, 1. - position.y);
         vec4 color = texture2D(webcam, pos);
         float v = max(color.x, max(color.y, color.z));
+        #{animateCode}
         gl_FragColor = vec4(#{func_name}(v), 1.);
       }"""
     @transformed_renderer.loadFragmentShader(transformed_program)
     @transformed_renderer.link()
     @transformed_renderer.draw()
 
-  animate: ->
+  animate: (e) ->
+    @doAnimate = $(e.target).closest('.animate').is(":checked")
+    this.updateCode()
 
   importRandom: ->
-    $.ajax
-      type: 'json'
-      url: 'http://www.colourlovers.com/api/palettes/random?format=json' 
-      success: (data) ->
-        console.log(data)
-      
+    $('.function_name').val('random_func') if $('.function_name').val().trim() == ""
+
+
+    callback = (args) =>
+      colors = args[0]["colors"]
+      this.setNumberPickers(5)
+      $('.pickers').find('.picker').each (x, elem) =>
+        color = "##{colors[x]}"
+        $(elem).find('.color').val(color)
+        $(elem).find('.time').val((0.25 * x).toFixed(3))
+        this.updateDivColor($(elem).find('.color'), color)
+
+      this.updateCode()
+
+    $.getJSON("http://www.colourlovers.com/api/palettes/random?format=json&jsonCallback=?",
+      { numResults: 1 },
+      callback)
+
 $ ->
   if $('.color_schemer')[0]
     window.gradient_renderer = new window.GLRenderer({el: $('canvas.gradient')})
@@ -201,13 +233,8 @@ $ ->
     window.gray_renderer.draw()
 
     window.transformed_renderer = new window.GLRenderer({el: $('canvas.transformed')})
-    window.shaderMakrer = new ShaderMaker
+    window.shaderMaker = new ShaderMaker
                             el: $('.color_schemer')
                             gradient_renderer: window.gradient_renderer
                             transformed_renderer: window.transformed_renderer
-
-
-
-
-
 
