@@ -1,0 +1,37 @@
+.color_schemer
+  .canvases
+    .canvas_box
+      %canvas.gradient
+    .canvas_box
+      %canvas.gray
+    .canvas_box
+      %canvas.transformed
+      .animate
+        Animate:
+        %input{type: 'checkbox', class: 'animate'}
+
+  %br{clear: 'both'}
+
+  .pickers{clear: 'both'}
+    .basic_functions
+      = link_to 'Add Picker', '#', class: 'add_picker'
+      = link_to 'Remove Picker', '#', class: 'remove_picker'
+    .advanced_functions
+      = link_to 'Import Random', '#', class: 'import_random'
+      = link_to 'Save', '#', class: 'save'
+
+    .name
+      Name: 
+      %input{type: 'text', class: 'function_name'}
+
+    .picker
+      %input{type: 'text', class: 'color'}
+      %input{type: 'text', class: 'time'}
+    
+
+  .output{clear: 'both'}
+    .title
+      CODE:
+    %textarea.code
+
+

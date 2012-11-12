@@ -38,6 +38,7 @@ ShaderMaker = Backbone.View.extend
     'click .canvases canvas': 'growShrinkCanvas'
     'click .animate': 'animate'
     'click .import_random': 'importRandom'
+    'click .save': 'save'
 
   growShrinkCanvas: (e) ->
     $(e.target).closest('canvas').toggleClass('blowup')
@@ -209,6 +210,22 @@ ShaderMaker = Backbone.View.extend
     $.getJSON("http://www.colourlovers.com/api/palettes/random?format=json&jsonCallback=?",
       { numResults: 1 },
       callback)
+
+  save: ->
+    data = {}
+    data['name'] = $('.function_name').val()
+    data['color_scheme_data'] = []
+    $('.pickers').find('.picker').each (x, elem) =>
+      color = $(elem).find('.color').val()
+      time = $(elem).find('.time').val()
+      data['color_scheme_data'].push({color: color, time: time})
+      console.log(data)
+
+    $.ajax
+      url: '/color_schemes'
+      type: 'POST'
+      dataType: 'json'
+      data: data
 
 $ ->
   if $('.color_schemer')[0]
