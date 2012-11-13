@@ -32,6 +32,8 @@ ShaderMaker = Backbone.View.extend
     'click .add_picker': 'addPicker'
     'click .remove_picker': 'removePicker'
     'click .color': 'showPicker'
+    'focus .color': 'showPicker'
+    'blur .color': 'hidePicker'
     'keyup .time': 'updateCode'
     'keyup .color': 'updateColor'
     'keyup .function_name': 'updateCode'
@@ -66,7 +68,7 @@ ShaderMaker = Backbone.View.extend
   showPicker: (e) ->
     $('#ColorPicker').remove()
     target = $(e.target).closest('.color')
-    picker = new Color.Picker
+    @picker = new Color.Picker
       autoclose: true
       color: '#FFFFFF'
       callback: (rgba) =>
@@ -75,9 +77,12 @@ ShaderMaker = Backbone.View.extend
         this.updateDivColor(target, hex)
         this.updateCode()
 
-    picker.element.style.top = target.position().top + "px"
-    picker.element.style.left = target.position().left + target.width() + 20 + "px"
-    $(picker.element).show()
+    @picker.element.style.top = target.position().top + "px"
+    @picker.element.style.left = target.position().left + target.width() + 20 + "px"
+    $(@picker.element).show()
+
+  hidePicker: (e) ->
+    $(@picker.element).hide() if @picker
 
   updateColor: (e) ->
     target = $(e.target).closest('.color')

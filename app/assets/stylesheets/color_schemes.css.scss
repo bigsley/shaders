@@ -1,16 +1,31 @@
 .canvases
 {
-
   .canvas_box {
     float: left;
     margin-right: 20px;
+    padding: 20px;
+    .inner {
+      padding: 10px;
+      background-color: #D0D0D0;
+    }
+  }
+
+  .animate_box {
+    margin-top: 5px;
+    .text, input {
+      float: left;
+      margin-top: 5px;
+    }
+    input {
+      margin-top: 10px;
+      margin-left: 5px;
+    }
   }
 
   canvas {
     width: 300px;
     height: 300px;
     cursor: pointer;
-    
     &.blowup {
       position: absolute;
       top: 0;
@@ -22,9 +37,30 @@
   }
 }
 
-.pickers, .output {
+
+.instructions, .pickers, .output {
   float: left;
   margin-left: 20px;
+  background-color: #FCC33A;
+  padding: 10px;
+
+  .first_color, .first_time, .color, .time {
+    float: left;
+  }
+
+  .color {
+    margin-right: 5px;
+  }
+}
+
+.instructions {
+  width: 300px;
+  .part_1, .part_2, .part_3 {
+    margin-bottom: 10px;
+  }
+  .optional {
+    margin-top: 10px;
+  }
 }
 
 .output {

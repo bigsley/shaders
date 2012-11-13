@@ -1,16 +1,44 @@
 .color_schemer
   .canvases
     .canvas_box
-      %canvas.gradient
+      .inner
+        %canvas.gradient
     .canvas_box
-      %canvas.gray
+      .inner
+        %canvas.gray
     .canvas_box
-      %canvas.transformed
-      .animate
-        Animate:
+      .inner
+        %canvas.transformed
+      .animate_box
+        .text
+          Animate:
         %input{type: 'checkbox', class: 'animate'}
 
   %br{clear: 'both'}
+
+  .instructions
+    .explanation
+      .part_1
+        This tool takes a list of pairs of [color, value] and converts it into a valid glsl function whose input is a value between 0.0 and 1.0 and a color (represented as a vec3).
+      .part_2
+        The function interpolates the colors. For instance, the exmple to the right sends 0.0 to white (#ffffff) and 1.0 to black (#000000).
+      .part_3
+        The webcam shaders (above - grayscale & colored) are provided to show what happens when an image is sent through your function (black -> 0.0, white -> 1.0).
+    .instruction_title
+      Instructions:
+    .instruction
+      1. Hit "Allow" three times to allow all of the shaders access to the camera.
+    .instruction
+      2. Fill in colors and the values where you wish the function to attain those colors.
+    .instruction
+      3. Hit "Add Picker" to add another set of values.
+    .instruction.optional
+      Optional: Hit "Import Random" to import a random color palette from
+      = link_to 'colourlovers.com', 'http://colourlovers.com'
+    .instruction.optional
+      Optional: Click "Animate" under the shader on ther right to make the colors change cyclically.
+    .instruction.optional
+      Optional: Click a shader to make it full-screen. Click again to leave full-screen mode.
 
   .pickers{clear: 'both'}
     .basic_functions
@@ -21,13 +49,25 @@
       = link_to 'Save', '#', class: 'save'
 
     .name
-      Name: 
-      %input{type: 'text', class: 'function_name'}
+      Name:
+      %input{type: 'text', class: 'function_name', value: 'function_name'}
 
     .picker
-      %input{type: 'text', class: 'color'}
-      %input{type: 'text', class: 'time'}
-    
+      %div.first_color
+        .heading
+          Color
+        .input
+          %input{type: 'text', class: 'color', value: '#ffffff'}
+      %div.first_time
+        .heading
+          Value
+        .input
+          %input{type: 'text', class: 'time', value: '0.0'}
+    .picker
+      %div
+        %input{type: 'text', class: 'color', value: '#000000'}
+      %div
+        %input{type: 'text', class: 'time', value: '1.0'}
 
   .output{clear: 'both'}
     .title
