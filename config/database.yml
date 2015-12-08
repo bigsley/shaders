@@ -6,7 +6,7 @@
 development:
   adapter: postgresql
   database: shaders_development
-  username: myapp
+  username: christopherbisignani
   password:
   host: localhost
 
@@ -17,7 +17,7 @@ test:
   adapter: postgresql
   database: shaders_test
   username: myapp
-  password: 
+  password:
   host: localhost
 
 production:
